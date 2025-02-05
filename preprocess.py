@@ -8,7 +8,7 @@ import re
 
 def extract_string(tag):
     direct_text = ''.join(t for t in tag if isinstance(t, str))
-    return re.sub(r"[^\w /]+", "", direct_text)
+    return re.sub(r"[^\w /.-]+", "", direct_text)
 
 
 def convert_to_csv(shard_path, output_folder):

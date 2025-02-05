@@ -29,6 +29,12 @@ def postprocess(input_path, output_path):
                 course_loc = i
                 break
 
+        dept_loc = -1
+        for i, j in enumerate(headers):
+            if "dept" in j.lower():
+                dept_loc = i
+                break
+
         headers.append("Course Code")
 
         os.makedirs(pathlib.Path(output_path).parent, exist_ok=True)
@@ -44,15 +50,19 @@ def postprocess(input_path, output_path):
                 if orig_course_code != -1:
                     row.pop(orig_course_code)
 
+                if dept_loc != -1:
+                    row[dept_loc] = row[dept_loc].replace("-ARTSC", "")
+
                 for i in range(len(row)):
                     if row[i] == "N/A":
                         row[i] = None
 
-                course_code = re.search("[A-Z]{3}\d{3}[HY]\d", row[course_loc] if course_loc != -1 else "")
+                course_code = re.search("[A-Z]{3}[\dABCD]\d{2}[HY]\d", row[course_loc] if course_loc != -1 else "")
                 if course_code:
                     row.append(course_code.group())
                 else:
-                    row.append(None)
+                    # Fall back to just default ig
+                    row.append(row[course_loc])
 
                 writer.writerow(row)
 
@@ -88,6 +98,44 @@ def main():
     scarborough["Division"] = "SCARB"
 
     combined = pd.concat([artsci, fas, mississaugua, scarborough])
+    combined["Response Ratio"] = combined["Number Invited"] / combined["Number Responses"]
+
+    cols = [
+        "INS1", "INS2", "INS3", "INS4", "INS5", "INS6",
+        "ARTSC1", "ARTSC2", "ARTSC3",
+        "APSC001", "APSC002", "APSC003", "APSC004", "APSC005", "APSC006", "APSC007", "APSC008",
+        "UTSC1", "UTSC2", "UTSC3", "Course Workload", "I would recommend this course", "I attended class", "Inspired to learn subject matter",
+    ]
+
+    all_lecs = combined
+    for i in cols:
+        if i not in all_lecs.columns:
+            continue
+
+        all_lecs[f"{i}_sum"] = all_lecs[i] * all_lecs["Number Responses"]
+
+    lecture_sections_combined = all_lecs.groupby(by=["Course Code", "Year", "Term"]).sum().reset_index()
+    for i in cols:
+        if i not in all_lecs.columns:
+            continue
+
+        lecture_sections_combined[i] = lecture_sections_combined[f"{i}_sum"] / lecture_sections_combined["Number Responses"]
+        lecture_sections_combined = lecture_sections_combined.drop(labels=[f"{i}_sum"], axis=1)
+    lecture_sections_combined = lecture_sections_combined.drop(labels=["Number Responses", "Number Invited", "Response Ratio"], axis=1)
+
+    dept_combined = all_lecs
+    dept_combined = dept_combined.drop(labels=["Course", "Last Name", "Term", "Year", "Course Code"], axis=1)
+    dept_combined = dept_combined.groupby(by=["Division", "Dept"]).sum().reset_index()
+    for i in cols:
+        if i not in all_lecs.columns:
+            continue
+
+        dept_combined[i] = dept_combined[f"{i}_sum"] / dept_combined["Number Responses"]
+        dept_combined = dept_combined.drop(labels=[f"{i}_sum"], axis=1)
+    dept_combined = dept_combined.drop(labels=["Number Responses", "Number Invited", "Response Ratio"], axis=1)
+
+    lecture_sections_combined.to_csv("data/lecture_sections_combined.csv", index=False)
+    dept_combined.to_csv("data/dept_combined.csv", index=False)
     combined.to_csv("data/combined.csv", index=False)
 
 
