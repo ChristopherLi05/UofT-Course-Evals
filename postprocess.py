@@ -67,7 +67,7 @@ def main():
     mississaugua = pd.read_csv("data/mississaugua.csv")
     scarborough = pd.read_csv("data/scarborough.csv")
 
-    fas = fas.rename(columns={fas.columns[0]: "Dept", fas.columns[1]: "Course"})
+    fas = fas.rename(columns={fas.columns[0]: "Dept", fas.columns[2]: "Course"})
 
     mississaugua = mississaugua.rename(columns={
         mississaugua.columns[5]: "INS1",
@@ -79,9 +79,13 @@ def main():
         mississaugua.columns[16]: "Number Responses",
     })
 
+    mississaugua["Division"] = "MISSI"
+
     scarborough = scarborough.rename(columns={
         scarborough.columns[15]: "Number Responses",
     })
+
+    scarborough["Division"] = "SCARB"
 
     combined = pd.concat([artsci, fas, mississaugua, scarborough])
     combined.to_csv("data/combined.csv", index=False)
