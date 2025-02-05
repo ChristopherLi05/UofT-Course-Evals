@@ -42,7 +42,7 @@ It looks like everything is handled server-sided, so we'll need to parse it on o
 custom requests, it seems like the number is unlimited. Don't be like me and try to request all 40727 of them; it won't go well.
 
 I found the most success with a payload size of 1000. The way I did it was creating a custom function that sent requests off for the different page numbers and cycled through the
-entire list. Then I just manually copied the results over to the shards folder. There isn't really a better way of doing this unless you want to create your own extension...
+entire list. Then I just manually copied the results over to the shards folder. There isn't really a better way of doing this unless you want to create your own extension... (unless you can use requests? I didn't experiment with it since I just assumed we had to go through quercus but it might be possible... maybe I'll take a look on a different day)
 
 Run `preprocess.py` and `postprocess.py` to get your final csv's. I put my data (slightly cleaned up) in the `data` directory.
 
