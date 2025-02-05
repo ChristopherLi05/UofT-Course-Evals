@@ -1,0 +1,6 @@
+.venv
+.idea
+shards/*
+!shards/example/**
+preprocess/*
+!prerocess/example.csv
