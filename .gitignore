@@ -1,6 +1,6 @@
 .venv
 .idea
 shards/*
-!shards/example/**
+!shards/example
 preprocess/*
 !preprocess/example.csv
