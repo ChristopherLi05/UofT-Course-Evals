@@ -114,7 +114,8 @@ def main():
 
         all_lecs[f"{i}_sum"] = all_lecs[i] * all_lecs["Number Responses"]
 
-    lecture_sections_combined = all_lecs.groupby(by=["Course Code", "Year", "Term"]).sum().reset_index()
+    lecture_sections_combined = all_lecs.drop(labels=["Course", "Last Name"], axis=1)
+    lecture_sections_combined = lecture_sections_combined.groupby(by=["Division", "Dept", "Course Code", "Year", "Term"]).sum().reset_index()
     for i in cols:
         if i not in all_lecs.columns:
             continue
@@ -123,8 +124,7 @@ def main():
         lecture_sections_combined = lecture_sections_combined.drop(labels=[f"{i}_sum"], axis=1)
     lecture_sections_combined = lecture_sections_combined.drop(labels=["Number Responses", "Number Invited", "Response Ratio"], axis=1)
 
-    dept_combined = all_lecs
-    dept_combined = dept_combined.drop(labels=["Course", "Last Name", "Term", "Year", "Course Code"], axis=1)
+    dept_combined = all_lecs.drop(labels=["Course", "Last Name", "Term", "Year", "Course Code"], axis=1)
     dept_combined = dept_combined.groupby(by=["Division", "Dept"]).sum().reset_index()
     for i in cols:
         if i not in all_lecs.columns:
