@@ -79,6 +79,10 @@ def main():
         mississaugua.columns[16]: "Number Responses",
     })
 
+    scarborough = scarborough.rename(columns={
+        scarborough.columns[15]: "Number Responses",
+    })
+
     combined = pd.concat([artsci, fas, mississaugua, scarborough])
     combined.to_csv("data/combined.csv", index=False)
 
