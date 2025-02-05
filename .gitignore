@@ -3,4 +3,4 @@
 shards/*
 !shards/example/**
 preprocess/*
-!prerocess/example.csv
+!preprocess/example.csv
