@@ -1,9 +1,9 @@
 # UofT Course Evaluations
 
+Updated Repo: https://github.com/ChristopherLi05/UofT-Course-Data
+
 Students are able to find course evaluations via the [Quercus course eval page](https://q.utoronto.ca/courses/48756). This is a repository that compiles the data that data into csv
 files for ease of analysis.
-
-Can I use this for my JSC class? Who knows :3c
 
 ## Methodology
 
